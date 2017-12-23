@@ -19,18 +19,38 @@ def get_courses_urls_list(amount):
     except etree.XMLSyntaxError, ValueError as parsing_error:
         print(parsing_error)
 
-def get_course_page_html(course_page_url):
+def get_and_parse_course_page_html(course_page_url):
     try:
         course_page_html = requests.get(course_page_url)
         coursera_xml.raise_for_status
     except requests.exceptions.ConnectionError as error:
         print(error)
     course_page_html.encoding = 'utf-8'
-    return course_page_html.text
+    parsed_page = BeautifulSoup(course_page_html.text, html.parser)
+    return parsed_page
 
-def get_course_name(course_page_html):
-    parsed_page = BeautifulSoup(course_page_html, html.parser)
-    
+
+def get_course_name(parsed_page):
+    try:
+        course_name = parsed_page.find('h1', class_='title display-3-text').text
+    except AttributeError:
+        course_name = None
+
+
+def get_course_name(parsed_page):
+    try:
+        course_language = parsed_page.find('div', class_='rc_language').text
+    except AttributeError:
+        course_language = None
+
+
+def get_course_start_(parsed_page):
+    try:
+        course_language = parsed_page.find('div', 
+                                            class_='rc-CourseEnrollButton',
+                                            data-reactid='73').text
+    except AttributeError:
+        course_language = None
 
 
 # # def output_courses_info_to_xlsx(filepath):
@@ -39,3 +59,4 @@ def get_course_name(course_page_html):
 
 if __name__ == '__main__':
     get_courses_urls_list()
+
