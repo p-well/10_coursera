@@ -54,8 +54,8 @@ def get_course_language(parsed_page):
 def get_course_startdate(parsed_page):
     try:
         start_date = parsed_page.find('div', 'startdate').text
-        if start_date.split(' ')[0].startswith('Start'):
-            start_date = str(start_date.split(' '))
+        if start_date.split(' ')[0].lower()startswith('start'):
+           
         print(type(start_date))
     except AttributeError:
         start_date = None
