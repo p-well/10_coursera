@@ -54,8 +54,10 @@ def get_course_language(parsed_page):
 def get_course_startdate(parsed_page):
     try:
         start_date = parsed_page.find('div', 'startdate').text
-        if start_date.split(' ')[0].lower()startswith('start'):
-           
+        temporary_date_list = start_date.split(' ')
+        if temporary_date_list[0].lower().startswith('start'):
+            del temporary_date_list[0]
+            start_date = ' '.join(temporary_date_list)
         print(type(start_date))
     except AttributeError:
         start_date = None
@@ -63,6 +65,16 @@ def get_course_startdate(parsed_page):
     return start_date
 
 
+def get_course_duration(paresed_page):
+    try:
+        duration = parsed_page.find('', '').text
+    
+     except AttributeError:
+        start_date = None
+    print(start_date)
+    return start_date
+        
+        
 # # def output_courses_info_to_xlsx(filepath):
 # #     pass
 
