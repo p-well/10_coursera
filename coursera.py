@@ -3,7 +3,7 @@ import random
 import requests
 from lxml import objectify, etree
 from bs4 import BeautifulSoup
-
+from openpyxl import Workbook
 
 def get_courses_urls_list(amount):
     xml_feed_url = 'https://www.coursera.org/sitemap~www~courses.xml'
@@ -24,6 +24,7 @@ def get_courses_urls_list(amount):
             UnboundLocalError) as parsing_error:
         print(parsing_error)
 
+        
 def get_and_parse_course_page_html(course_page_url):
     try:
         course_page_html = requests.get(course_page_url)
@@ -43,13 +44,15 @@ def get_course_name(parsed_page):
     print(course_name)
     return course_name
 
+
 def get_course_language(parsed_page):
     try:
         course_language = parsed_page.find('div', class_='rc-Language').text
     except AttributeError:
-        course_language = None
+        course_language = 'No information'
     print(course_language)
     return course_language
+
 
 def get_course_startdate(parsed_page):
     try:
@@ -60,7 +63,7 @@ def get_course_startdate(parsed_page):
             start_date = ' '.join(temporary_date_list)
         print(type(start_date))
     except AttributeError:
-        start_date = None
+        start_date = 'No information'
     print(start_date)
     return start_date
 
@@ -69,20 +72,42 @@ def get_course_duration(parsed_page):
     try:
         duration = parsed_page.find('i', class_='cif-clock').parent.parent.contents[1].string
     except AttributeError:
-        duration = None
+        duration = 'No information'
     print(duration)
     return duration
-        
-        
-# # def output_courses_info_to_xlsx(filepath):
-# #     pass
+
+
+def get_course_rating(parsed_page):
+    try:
+        rating = parsed_page.find('div', class_='ratings-text bt3-visible-xs').content[0].string
+    except AttributeError:
+        rating = 'No information'
+    print(rating)
+    return rating
+
+
+def output_courses_info_to_xlsx(all_courses_data):
+    workbook = Workbook()
+    worksheet = workbook.active
+    worksheet.title = 'Courses Information'
+    header = ['Course Name', 'Language', 'Start Date', 'Duration', 'Rating', 'Link']
+    worksheet.append(header)
+    for course_data in all_courses_data:
+        workbook.append(course_data)
+    workbook.save('coursera_info.xlsx')
 
 
 if __name__ == '__main__':
+    all_courses_data_list = []
     urls_list = get_courses_urls_list(5)
-    parsed_page = get_and_parse_course_page_html(urls_list[0])
-    course_name = get_course_name(parsed_page)
-    course_language = get_course_language(parsed_page)
-    start_date = get_course_startdate(parsed_page)
-    duration = get_course_duration(parsed_page)
-    #print(course_name, course_language, start_date)
+    for url in urls_list:
+        course_data = ()
+        parsed_page = get_and_parse_course_page_html(url)
+        course_data.append(get_course_name(parsed_page))
+        course_data.append(get_course_language(parsed_page))
+        course_data.append(get_course_startdate(parsed_page))
+        course_data.append(get_course_duration(parsed_page))
+        course_data.append(get_course_rating(parsed_page))
+        course_data.append(url)
+        all_courses_data_list.append(course_data)
+    output_courses_info_to_xlsx(all_courses_data_list)
