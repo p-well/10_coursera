@@ -41,7 +41,7 @@ def get_course_name(parsed_page):
         course_name = parsed_page.find('h1', class_='title display-3-text').text
     except AttributeError:
         course_name = None
-    print(course_name)
+    print('Name:', course_name)
     return course_name
 
 
@@ -61,7 +61,6 @@ def get_course_startdate(parsed_page):
         if temporary_date_list[0].lower().startswith('start'):
             del temporary_date_list[0]
             start_date = ' '.join(temporary_date_list)
-        print(type(start_date))
     except AttributeError:
         start_date = 'No information'
     print(start_date)
@@ -79,7 +78,7 @@ def get_course_duration(parsed_page):
 
 def get_course_rating(parsed_page):
     try:
-        rating = parsed_page.find('div', class_='ratings-text bt3-visible-xs').content[0].string
+        rating = parsed_page.find('div', class_='ratings-text bt3-visible-xs').contents[0].string
     except AttributeError:
         rating = 'No information'
     print(rating)
@@ -90,19 +89,20 @@ def output_courses_info_to_xlsx(all_courses_data):
     workbook = Workbook()
     worksheet = workbook.active
     worksheet.title = 'Courses Information'
-    header = ['Course Name', 'Language', 'Start Date', 'Duration', 'Rating', 'Link']
+    header = ['№','Course Name', 'Language', 'Start Date', 'Duration', 'Rating', 'Link']
     worksheet.append(header)
     for course_data in all_courses_data:
-        workbook.append(course_data)
+        worksheet.append(course_data)
     workbook.save('coursera_info.xlsx')
 
 
 if __name__ == '__main__':
     all_courses_data_list = []
     urls_list = get_courses_urls_list(5)
-    for url in urls_list:
-        course_data = ()
+    for number,url in enumerate(urls_list, start=1):
+        course_data = []
         parsed_page = get_and_parse_course_page_html(url)
+        course_data.append(number)
         course_data.append(get_course_name(parsed_page))
         course_data.append(get_course_language(parsed_page))
         course_data.append(get_course_startdate(parsed_page))
