@@ -65,14 +65,13 @@ def get_course_startdate(parsed_page):
     return start_date
 
 
-def get_course_duration(paresed_page):
+def get_course_duration(parsed_page):
     try:
-        duration = parsed_page.find('', '').text
-    
-     except AttributeError:
-        start_date = None
-    print(start_date)
-    return start_date
+        duration = parsed_page.find('i', class_='cif-clock').parent.parent.contents[1].string
+    except AttributeError:
+        duration = None
+    print(duration)
+    return duration
         
         
 # # def output_courses_info_to_xlsx(filepath):
@@ -85,4 +84,5 @@ if __name__ == '__main__':
     course_name = get_course_name(parsed_page)
     course_language = get_course_language(parsed_page)
     start_date = get_course_startdate(parsed_page)
+    duration = get_course_duration(parsed_page)
     #print(course_name, course_language, start_date)
