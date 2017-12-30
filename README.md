@@ -1,8 +1,8 @@
 # Coursera Dump
 
 This script collects information about educational courses presented at [Coursera.org](https://www.coursera.org/). The script randomly choose any <br /> specified 
-number of courses from [Coursera xml feed](https://www.coursera.org/sitemap~www~courses.xml), then goes to the each course webpage, parse it with <br />
-[BeautifulSoup](https://pypi.python.org/pypi/beautifulsoup4) and put parsed data into Excel table using [Openpyxl](https://pypi.python.org/pypi/openpyxl) library.
+number of courses from [Coursera xml feed](https://www.coursera.org/sitemap~www~courses.xml) and parse XML using [lxml](https://pypi.python.org/pypi/lxml) 
+library then goes to the each course webpage, parse it with [BeautifulSoup](https://pypi.python.org/pypi/beautifulsoup4) and put parsed data into Excel table using [Openpyxl](https://pypi.python.org/pypi/openpyxl) library.
 
 
 Script retrieves the following data about course:
