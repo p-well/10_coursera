@@ -1,8 +1,10 @@
 # Coursera Dump
 
 This is web crawler for  collecting information about educational courses presented at [Coursera.org](https://www.coursera.org/). <br />
+
 The script randomly choose any specified number of courses from [Coursera xml feed](https://www.coursera.org/sitemap~www~courses.xml) and parse XML using 
 [lxml](https://pypi.python.org/pypi/lxml) library <br /> to fetch URLs list. <br />
+
 Then script goes to the each course webpage, parse it with [BeautifulSoup](https://pypi.python.org/pypi/beautifulsoup4) and put parsed data into Excel table using [Openpyxl](https://pypi.python.org/pypi/openpyxl) library.
 
 
