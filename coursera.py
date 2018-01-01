@@ -88,14 +88,14 @@ def output_courses_info_to_xlsx(filename, all_courses_data):
     worksheet = workbook.active
     worksheet.title = 'Courses Information'
     header = [
-    '№',
-    'Course Name',
-    'Language',
-    'Start Date',
-    'Duration',
-    'Rating',
-    'Link'
-]
+        '№',
+        'Course Name',
+        'Language',
+        'Start Date',
+        'Duration',
+        'Rating',
+        'Link'
+    ]
     worksheet.append(header)
     for course_data in all_courses_data:
         worksheet.append([
