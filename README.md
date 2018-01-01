@@ -42,7 +42,8 @@ Script executing without specifying of the arguments leads to script running wit
 <b>>python coursera.py --amount 20 --filename coursera_output.xlsx</b>
 
 Collecting coureses information...
-Done!
+
+Done! File "coursera_info.xlsx" created
 </pre>
 
 
