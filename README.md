@@ -34,6 +34,7 @@ To execute the script run the command ```python coursera.py <arguments>``` in yo
 User needs to specify amount of courses and name of output Excel file - see example below.
 Excel file will be saved in script directory.
 
+Script executing without specifying of the argument leads to script running with default values - amount:20, filename - coursera.xlsx.
 
 # Example of Scripts Launch
 
