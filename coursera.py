@@ -121,6 +121,8 @@ def get_command_line_arguments():
 
 
 if __name__ == '__main__':
+    course_data = {}
+    all_courses_data_list = []
     arguments = get_command_line_arguments()
     print('\nCollecting coureses information...')
     xml_page_content = get_xml_feed_page()
@@ -128,8 +130,6 @@ if __name__ == '__main__':
         xml_page_content,
         arguments.amount
     )
-    course_data = {}
-    all_courses_data_list = []
     for number, url in enumerate(urls_list, start=1):
         soup = get_course_page_soup(url)
         course_data = {
@@ -137,7 +137,7 @@ if __name__ == '__main__':
             'Course Name': get_course_name(soup),
             'Language': get_course_language(soup),
             'Start Date': get_course_startdate(soup),
-            'Duration': get_course_startdate(soup),
+            'Duration': get_course_duration(soup),
             'Rating': get_course_rating(soup),
             'Link': url
         }
