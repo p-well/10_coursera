@@ -6,30 +6,25 @@ from bs4 import BeautifulSoup
 from openpyxl import Workbook
 
 
-def get_xml_feed_page():
+def fetch_xml_feed_page():
     xml_feed_url = 'https://www.coursera.org/sitemap~www~courses.xml'
-    try:
-        xml_page_content = requests.get(xml_feed_url).content
-    except requests.exceptions.ConnectionError:
-        xml_page_content = None
+    xml_page_content = requests.get(xml_feed_url).content
     return xml_page_content
 
 
-def parse_xml_and_choose_random_urls(xml_page_content, amount):
-    try:
-        root = objectify.fromstring(xml_page_content)
-        all_courses_urls = [urltag.loc.text for urltag in root.getchildren()]
-        random_courses_urls = random.sample(all_courses_urls, amount)
-        return random_courses_urls
-    except (etree.XMLSyntaxError, ValueError, UnboundLocalError):
-        random_courses_urls = None
+def parse_xml_for_urls(xml_page_content):
+    root = objectify.fromstring(xml_page_content)
+    all_urls_list = [urltag.loc.text for urltag in root.getchildren()]
+    return all_urls_list
 
 
-def get_course_page_soup(course_page_url):
-    try:
-        course_page_html = requests.get(course_page_url)
-    except requests.exceptions.ConnectionError:
-        course_page_html = None
+def choose_random_urls(all_urls_list, amount):
+    random_urls_list = random.sample(all_urls_list, amount)
+    return random_urls_list
+
+
+def parse_html(course_page_url):
+    course_page_html = requests.get(course_page_url)
     course_page_html.encoding = 'utf-8'
     soup_object = BeautifulSoup(course_page_html.text, 'html.parser')
     return soup_object
@@ -38,9 +33,9 @@ def get_course_page_soup(course_page_url):
 def get_course_name(soup):
     try:
         course_name = soup.find('h1', class_='title display-3-text').text
+        return course_name
     except AttributeError:
         course_name = None
-    return course_name
 
 
 def get_course_language(soup):
@@ -69,9 +64,9 @@ def get_course_duration(soup):
             'i',
             class_='cif-clock'
         ).parent.parent.contents[1].string
+        return duration
     except AttributeError:
         duration = None
-    return duration
 
 
 def get_course_rating(soup):
@@ -80,9 +75,9 @@ def get_course_rating(soup):
             'div',
             class_='ratings-text bt3-visible-xs'
         ).contents[0].string
+        return rating
     except AttributeError:
         rating = None
-    return rating
 
 
 def output_courses_info_to_xlsx(filename, all_courses_data):
@@ -121,17 +116,14 @@ def get_command_line_arguments():
 
 
 if __name__ == '__main__':
-    course_data = {}
     all_courses_data_list = []
     arguments = get_command_line_arguments()
     print('\nCollecting coureses information...')
-    xml_page_content = get_xml_feed_page()
-    urls_list = parse_xml_and_choose_random_urls(
-        xml_page_content,
-        arguments.amount
-    )
-    for number, url in enumerate(urls_list, start=1):
-        soup = get_course_page_soup(url)
+    xml_page_content = fetch_xml_feed_page()
+    all_urls = parse_xml_for_urls(xml_page_content)
+    random_urls = choose_random_urls(all_urls, arguments.amount)
+    for number, url in enumerate(random_urls, start=1):
+        soup = parse_html(url)
         course_data = {
             '№': number,
             'Course Name': get_course_name(soup),
@@ -141,6 +133,9 @@ if __name__ == '__main__':
             'Rating': get_course_rating(soup),
             'Link': url
         }
+        for key, value in course_data.items():
+            if value is None:
+                course_data[key] = 'No information'
         all_courses_data_list.append(course_data)
     output_courses_info_to_xlsx(
         arguments.filename,
