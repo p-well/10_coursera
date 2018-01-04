@@ -23,11 +23,15 @@ def choose_random_urls(all_urls_list, amount):
     return random_urls_list
 
 
-def parse_html(course_page_url):
+def fetch_course_page(course_page_url):
     course_page_html = requests.get(course_page_url)
     course_page_html.encoding = 'utf-8'
-    soup_object = BeautifulSoup(course_page_html.text, 'html.parser')
-    return soup_object
+    return course_page_html
+
+
+def parse_course_page_html(course_page_html):
+    page_soup = BeautifulSoup(course_page_html.text, 'html.parser')
+    return page_soup
 
 
 def get_course_name(soup):
@@ -123,14 +127,15 @@ if __name__ == '__main__':
     all_urls = parse_xml_for_urls(xml_page_content)
     random_urls = choose_random_urls(all_urls, arguments.amount)
     for number, url in enumerate(random_urls, start=1):
-        soup = parse_html(url)
+        course_page_html = fetch_course_page(url)
+        page_soup = parse_course_page_html(course_page_html)
         course_data = {
             '№': number,
-            'Course Name': get_course_name(soup),
-            'Language': get_course_language(soup),
-            'Start Date': get_course_startdate(soup),
-            'Duration': get_course_duration(soup),
-            'Rating': get_course_rating(soup),
+            'Course Name': get_course_name(page_soup),
+            'Language': get_course_language(page_soup),
+            'Start Date': get_course_startdate(page_soup),
+            'Duration': get_course_duration(page_soup),
+            'Rating': get_course_rating(page_soup),
             'Link': url
         }
         for key, value in course_data.items():
