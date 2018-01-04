@@ -38,7 +38,6 @@ def get_course_language(soup):
         return soup.find('div', class_='rc-Language').text
     except AttributeError:
         return None
-    
 
 
 def get_course_startdate(soup):
@@ -51,7 +50,6 @@ def get_course_startdate(soup):
         return start_date
     except AttributeError:
         return None
-    
 
 
 def get_course_duration(soup):
