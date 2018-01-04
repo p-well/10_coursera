@@ -7,8 +7,8 @@ from openpyxl import Workbook
 
 
 def fetch_webpage(url):
-    responce = requests.get(url)
-    return responce
+    response = requests.get(url)
+    return response
 
 
 def parse_xml_for_urls(xml_page_content):
