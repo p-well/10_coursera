@@ -43,7 +43,7 @@ Script executing without specifying of the arguments leads to script running wit
 
 Collecting coureses information...
 
-Done! File "coursera_info.xlsx" created
+Done! File "coursera_output.xlsx" created
 </pre>
 
 
