@@ -6,10 +6,9 @@ from bs4 import BeautifulSoup
 from openpyxl import Workbook
 
 
-def fetch_xml_feed_page():
-    xml_feed_url = 'https://www.coursera.org/sitemap~www~courses.xml'
-    xml_page_content = requests.get(xml_feed_url).content
-    return xml_page_content
+def fetch_webpage(url):
+    responce = requests.get(url)
+    return responce
 
 
 def parse_xml_for_urls(xml_page_content):
@@ -21,12 +20,6 @@ def parse_xml_for_urls(xml_page_content):
 def choose_random_urls(all_urls_list, amount):
     random_urls_list = random.sample(all_urls_list, amount)
     return random_urls_list
-
-
-def fetch_course_page(course_page_url):
-    course_page_html = requests.get(course_page_url)
-    course_page_html.encoding = 'utf-8'
-    return course_page_html
 
 
 def parse_course_page_html(course_page_html):
@@ -123,11 +116,13 @@ if __name__ == '__main__':
     all_courses_data_list = []
     arguments = get_command_line_arguments()
     print('\nCollecting coureses information...')
-    xml_page_content = fetch_xml_feed_page()
+    xml_feed_url = 'https://www.coursera.org/sitemap~www~courses.xml'
+    xml_page_content = fetch_webpage(xml_feed_url).content
     all_urls = parse_xml_for_urls(xml_page_content)
     random_urls = choose_random_urls(all_urls, arguments.amount)
     for number, url in enumerate(random_urls, start=1):
-        course_page_html = fetch_course_page(url)
+        course_page_html = fetch_webpage(url)
+        course_page_html.encoding = 'utf-8'
         page_soup = parse_course_page_html(course_page_html)
         course_data = {
             '№': number,
